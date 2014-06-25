@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
         }, 100);
 
         /*Intent result = new Intent(this,ResultActivity.class);
-        result.putExtra("contents", "tedtz");
+        result.putExtra("contents", "55032;prevod;RZ456;");
         startActivity(result);*/
     }
 
