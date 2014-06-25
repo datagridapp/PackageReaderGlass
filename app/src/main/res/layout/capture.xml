@@ -16,11 +16,18 @@
  -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <SurfaceView android:id="@+id/preview_view"
-               android:layout_width="fill_parent"
-               android:layout_height="fill_parent"/>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <SurfaceView android:id="@+id/preview_view"
+                   android:layout_width="fill_parent"
+                   android:layout_height="fill_parent"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
 
-  <TextView android:id="@+id/status_view"
+    <ListView android:id="@+id/status_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="bottom|center_horizontal"

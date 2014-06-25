@@ -18,9 +18,9 @@
 <trigger command="RECOGNIZE_THIS" >
 
     <constraints
-        camera="true"
-        network="true" />
-<!-- 
-    <input prompt="@string/prompt_scan_what" /> -->
+        camera="true" />
+    <!--        network="true" /> -->
+    <!--
+        <input prompt="@string/prompt_scan_what" /> -->
 
 </trigger>
