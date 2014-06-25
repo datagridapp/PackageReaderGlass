@@ -30,7 +30,7 @@ public class ResultActivity extends Activity {
                 if (contentArr[0] != null) {
                     // uuid is always stored first
                     String uuid = contentArr[0];
-                    getOrders(uuid);
+                    //getOrders(uuid);
                 }
             }
         }
