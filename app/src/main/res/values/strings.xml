@@ -38,6 +38,6 @@
     <string name="preferences_supplemental_summary">Try to retrieve more information about the barcode contents</string>
     <string name="preferences_supplemental_title">Retrieve more info</string>
     <string name="preferences_vibrate_title">Vibrate</string>
-    <string name="title_activity_result">ResultActivity</string>
 
+    <string name="glass_voice_trigger">scan package</string>
 </resources>

@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<trigger command="RECOGNIZE_THIS" >
+<trigger keyword="@string/glass_voice_trigger" >
 
     <constraints
         camera="true" />
