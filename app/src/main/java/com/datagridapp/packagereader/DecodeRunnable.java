@@ -41,120 +41,120 @@ import java.util.concurrent.CountDownLatch;
  */
 final class DecodeRunnable implements Runnable, Camera.PreviewCallback {
 
-  private static final String TAG = DecodeRunnable.class.getSimpleName();
+    private static final String TAG = DecodeRunnable.class.getSimpleName();
 
-  private final CaptureActivity activity;
-  private final Camera camera;
-  private final int height;
-  private final int width;
-  private boolean running;
-  private Handler handler;
-  private final CountDownLatch handlerInitLatch;
+    private final CaptureActivity activity;
+    private final Camera camera;
+    private final int height;
+    private final int width;
+    private boolean running;
+    private Handler handler;
+    private final CountDownLatch handlerInitLatch;
 
-  DecodeRunnable(CaptureActivity activity, Camera camera) {
-    this.activity = activity;
-    this.camera = camera;
-    Camera.Parameters parameters = camera.getParameters();
-    Camera.Size previewSize = parameters.getPreviewSize();
-    height = previewSize.height;
-    width = previewSize.width;
-    running = true;
-    handlerInitLatch = new CountDownLatch(1);
-  }
-
-  private Handler getHandler() {
-    try {
-      handlerInitLatch.await();
-    } catch (InterruptedException ie) {
-      // continue?
+    DecodeRunnable(CaptureActivity activity, Camera camera) {
+        this.activity = activity;
+        this.camera = camera;
+        Camera.Parameters parameters = camera.getParameters();
+        Camera.Size previewSize = parameters.getPreviewSize();
+        height = previewSize.height;
+        width = previewSize.width;
+        running = true;
+        handlerInitLatch = new CountDownLatch(1);
     }
-    return handler;
-  }
 
-
-  @Override
-  public void run() {
-    Looper.prepare();
-    handler = new DecodeHandler();
-    handlerInitLatch.countDown();
-    Looper.loop();
-  }
-
-  void startScanning() {
-    getHandler().obtainMessage(R.id.decode_failed).sendToTarget();
-  }
-
-  void stop() {
-    getHandler().obtainMessage(R.id.quit).sendToTarget();
-  }
-
-  @Override
-  public void onPreviewFrame(byte[] data, Camera camera) {
-    if (running) {
-      getHandler().obtainMessage(R.id.decode, data).sendToTarget();
+    private Handler getHandler() {
+        try {
+            handlerInitLatch.await();
+        } catch (InterruptedException ie) {
+            // continue?
+        }
+        return handler;
     }
-  }
 
-  private final class DecodeHandler extends Handler {
 
-    private final Map<DecodeHintType,Object> hints;
+    @Override
+    public void run() {
+        Looper.prepare();
+        handler = new DecodeHandler();
+        handlerInitLatch.countDown();
+        Looper.loop();
+    }
 
-    DecodeHandler() {
-      hints = new EnumMap<DecodeHintType,Object>(DecodeHintType.class);
-      hints.put(DecodeHintType.POSSIBLE_FORMATS,
-          Arrays.asList(BarcodeFormat.AZTEC, BarcodeFormat.QR_CODE, BarcodeFormat.DATA_MATRIX));
+    void startScanning() {
+        getHandler().obtainMessage(R.id.decode_failed).sendToTarget();
+    }
+
+    void stop() {
+        getHandler().obtainMessage(R.id.quit).sendToTarget();
     }
 
     @Override
-    public void handleMessage(Message message) {
-      if (!running) {
-        return;
-      }
-      switch (message.what) {
-        case R.id.decode:
-          decode((byte[]) message.obj);
-          break;
-        case R.id.decode_succeeded:
-          final Result result = (Result) message.obj;
-          activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              activity.setResult(result);
+    public void onPreviewFrame(byte[] data, Camera camera) {
+        if (running) {
+            getHandler().obtainMessage(R.id.decode, data).sendToTarget();
+        }
+    }
+
+    private final class DecodeHandler extends Handler {
+
+        private final Map<DecodeHintType, Object> hints;
+
+        DecodeHandler() {
+            hints = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
+            hints.put(DecodeHintType.POSSIBLE_FORMATS,
+                    Arrays.asList(BarcodeFormat.AZTEC, BarcodeFormat.QR_CODE, BarcodeFormat.DATA_MATRIX));
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            if (!running) {
+                return;
             }
-          });
-          break;
-        case R.id.decode_failed:
-          camera.setOneShotPreviewCallback(DecodeRunnable.this);
-          break;
-        case R.id.quit:
-          running = false;
-          Looper.myLooper().quit();
-          break;
-      }
+            switch (message.what) {
+                case R.id.decode:
+                    decode((byte[]) message.obj);
+                    break;
+                case R.id.decode_succeeded:
+                    final Result result = (Result) message.obj;
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.setResult(result);
+                        }
+                    });
+                    break;
+                case R.id.decode_failed:
+                    camera.setOneShotPreviewCallback(DecodeRunnable.this);
+                    break;
+                case R.id.quit:
+                    running = false;
+                    Looper.myLooper().quit();
+                    break;
+            }
+        }
+
+        private void decode(byte[] data) {
+            Result rawResult = null;
+            PlanarYUVLuminanceSource source =
+                    new PlanarYUVLuminanceSource(data, width, height, 0, 0, width, height, false);
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = new MultiFormatReader().decode(bitmap, hints);
+            } catch (ReaderException re) {
+                // continue
+            }
+
+            Handler handler = getHandler();
+            Message message;
+            if (rawResult == null) {
+                message = handler.obtainMessage(R.id.decode_failed);
+            } else {
+                Log.i(TAG, "Decode succeeded: " + rawResult.getText());
+                message = handler.obtainMessage(R.id.decode_succeeded, rawResult);
+            }
+            message.sendToTarget();
+        }
+
     }
-
-    private void decode(byte[] data) {
-      Result rawResult = null;
-      PlanarYUVLuminanceSource source =
-          new PlanarYUVLuminanceSource(data, width, height, 0, 0, width, height, false);
-      BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-      try {
-        rawResult = new MultiFormatReader().decode(bitmap, hints);
-      } catch (ReaderException re) {
-        // continue
-      }
-
-      Handler handler = getHandler();
-      Message message;
-      if (rawResult == null) {
-        message = handler.obtainMessage(R.id.decode_failed);
-      } else {
-        Log.i(TAG, "Decode succeeded: " + rawResult.getText());
-        message = handler.obtainMessage(R.id.decode_succeeded, rawResult);
-      }
-      message.sendToTarget();
-    }
-
-  }
 
 }

@@ -19,23 +19,23 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <SurfaceView android:id="@+id/preview_view"
-                   android:layout_width="fill_parent"
-                   android:layout_height="fill_parent"/>
+
+        <SurfaceView
+            android:id="@+id/preview_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
 
-    <ListView android:id="@+id/status_view"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/result_view"
-            android:textSize="54sp"
-            android:padding="10dip"
-            android:textColor="@color/result_text"
-            android:visibility="gone"/>
+    <com.google.android.glass.widget.CardScrollView
+        android:id="@+id/status_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/result_view"
+        android:visibility="gone"/>
 
 </merge>
 

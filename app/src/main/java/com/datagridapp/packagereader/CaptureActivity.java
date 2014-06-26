@@ -28,9 +28,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
+import com.google.android.glass.widget.CardScrollView;
 import com.google.zxing.Result;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ParsedResultType;
@@ -52,6 +51,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private Camera camera;
     private DecodeRunnable decodeRunnable;
     private Result result;
+    private CardScrollView mScrollView;
+    private CardsAdapter mCardsAdapter;
+
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -59,6 +61,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.capture);
+
+        mCardsAdapter = new CardsAdapter(this);
+        mScrollView = (CardScrollView) findViewById(R.id.status_view);
+        mScrollView.setAdapter(mCardsAdapter);
     }
 
     @Override
@@ -157,11 +163,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     void setResult(Result result) {
-        ListView statusView = (ListView) findViewById(R.id.status_view);
         String[] textArr = result.getText().split(";");
-        statusView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, textArr));
+        mCardsAdapter.setCards(textArr);
+
+        mScrollView.setVisibility(View.VISIBLE);
+        mScrollView.activate();
+
+//        statusView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, textArr));
 //        statusView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.max(14, 72 - text.length() / 2));
-        statusView.setVisibility(View.VISIBLE);
         this.result = result;
     }
 
@@ -178,7 +187,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void reset() {
-        findViewById(R.id.status_view).setVisibility(View.GONE);
+        mScrollView.setVisibility(View.GONE);
+        mScrollView.deactivate();
         result = null;
         decodeRunnable.startScanning();
     }
