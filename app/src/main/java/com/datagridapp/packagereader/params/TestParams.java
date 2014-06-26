@@ -1,12 +1,12 @@
-package datagridapp.packagereader.params;
+package com.datagridapp.packagereader.params;
 
 import android.content.Context;
 
 
-import datagridapp.packagereader.R;
-import datagridapp.packagereader.http.HttpMethod;
-import datagridapp.packagereader.http.HttpParams;
-import datagridapp.packagereader.http.HttpResponse;
+import com.datagridapp.packagereader.R;
+import com.datagridapp.packagereader.http.HttpMethod;
+import com.datagridapp.packagereader.http.HttpParams;
+import com.datagridapp.packagereader.http.HttpResponse;
 
 /**
  * Created by tegi.sk

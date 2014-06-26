@@ -1,4 +1,4 @@
-package datagridapp.packagereader.http;
+package com.datagridapp.packagereader.http;
 
 /**
  * use to specifie http method type

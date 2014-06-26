@@ -1,4 +1,4 @@
-package datagridapp.packagereader.http;
+package com.datagridapp.packagereader.http;
 
 import org.json.JSONException;
 import org.json.JSONObject;

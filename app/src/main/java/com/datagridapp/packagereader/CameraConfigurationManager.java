@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package datagridapp.packagereader;
+package com.datagridapp.packagereader;
 
 import android.graphics.Rect;
 import android.hardware.Camera;

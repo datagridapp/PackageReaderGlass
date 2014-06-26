@@ -1,4 +1,4 @@
-package datagridapp.packagereader.http;
+package com.datagridapp.packagereader.http;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,8 +45,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.os.Environment;
-
-import datagridapp.packagereader.http.AppManager;
 
 public class HttpClient {
 	

@@ -1,4 +1,4 @@
-package datagridapp.packagereader;
+package com.datagridapp.packagereader;
 
 import android.app.Activity;
 import android.content.Intent;

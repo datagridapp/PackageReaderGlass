@@ -1,4 +1,4 @@
-package datagridapp.packagereader.http;
+package com.datagridapp.packagereader.http;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;

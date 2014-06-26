@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package datagridapp.packagereader;
+package com.datagridapp.packagereader;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -122,9 +122,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (result != null) {
             switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                    handleResult(result);
-                    return true;
+//                case KeyEvent.KEYCODE_DPAD_CENTER:
+//                    handleResult(result);
+//                    return true;
                 case KeyEvent.KEYCODE_BACK:
                     reset();
                     return true;
